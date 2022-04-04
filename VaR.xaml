@@ -1,0 +1,44 @@
+﻿<Window x:Class="Pricer_v5.VaR"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy ="http://oxyplot.org/wpf"
+        xmlns:local="clr-namespace:Pricer_v5"
+        mc:Ignorable="d"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        Title="Yahoo" Height="500" Width="800" Background="#FF5A5A5A">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120*" KeyboardNavigation.TabNavigation="Cycle"/>
+            <ColumnDefinition Width="120*"/>
+            <ColumnDefinition Width="560*" />
+        </Grid.ColumnDefinitions>
+        <ListView Grid.Column="2" x:Name ="YahooDataList" HorizontalAlignment="Left" Height="350" Margin="14,46,0,0" VerticalAlignment="Top" Width="532"  Grid.ColumnSpan="2" Background="#FF52C8C6">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Date" Width="76" DisplayMemberBinding="{Binding Da}" />
+                    <GridViewColumn Header="Openning" Width="76" DisplayMemberBinding="{Binding Open}"/>
+                    <GridViewColumn Header="High" Width="76" DisplayMemberBinding="{Binding High}"/>
+                    <GridViewColumn Header="Low" Width="76" DisplayMemberBinding="{Binding Low}"/>
+                    <GridViewColumn Header="Closing" Width="76" DisplayMemberBinding="{Binding Close}" />
+                    <GridViewColumn Header="Clos Adj" Width="76" DisplayMemberBinding="{Binding AdjClos}"/>
+                    <GridViewColumn Header="Vol" Width="76" DisplayMemberBinding="{Binding Vol}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <TextBlock Foreground="#FF52C8C6" HorizontalAlignment="Center" Height="18" Margin="0,46,0,0" TextWrapping="Wrap" Text="Ticker" VerticalAlignment="Top" Width="70"/>
+        <TextBlock Foreground="#FF52C8C6" HorizontalAlignment="Center" Height="18" Margin="0,86,0,0" TextWrapping="Wrap" Text="Horizon" VerticalAlignment="Top" Width="70"/>
+        <TextBlock Foreground="#FF52C8C6" HorizontalAlignment="Center" Height="18" Margin="0,126,0,0" TextWrapping="Wrap" Text="Conf alpha" VerticalAlignment="Top" Width="70"/>
+        <TextBox Grid.Column="1" HorizontalAlignment="Center" x:Name ="Ticker" Margin="0,46,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="70" />
+        <TextBox Grid.Column="1" HorizontalAlignment="Center" x:Name ="Horizon" Margin="0,86,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="70"  />
+        <TextBox Grid.Column="1" HorizontalAlignment="Center" x:Name ="Alpha" Margin="0,126,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="70"  />
+        <Button  Grid.ColumnSpan="2" x:Name = "Calcul" Content="Calcul" HorizontalAlignment="Center" Height="24" Margin="0,165,0,0" VerticalAlignment="Top" Width="193" Click="Calcul_Click" Background="#FF52C8C6" BorderBrush="White" />
+        <TextBlock Foreground="#FF52C8C6" HorizontalAlignment="Center" Height="18" Margin="0,220,0,0" TextWrapping="Wrap" Text="VaR Hist" VerticalAlignment="Top" Width="70"/>
+        <TextBlock Foreground="#FF52C8C6" HorizontalAlignment="Center" Height="18" Margin="0,260,0,0" TextWrapping="Wrap" Text="VaR MC" VerticalAlignment="Top" Width="70"/>
+        <TextBlock Foreground="#FF52C8C6" HorizontalAlignment="Center" Height="18" Margin="0,300,0,0" TextWrapping="Wrap" Text="VaR Para" VerticalAlignment="Top" Width="70"/>
+        <TextBox Grid.Column="1" HorizontalAlignment="Center" x:Name ="VaRHistInp" Margin="0,220,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="70" />
+        <TextBox Grid.Column="1" HorizontalAlignment="Center" x:Name ="VaRMCInp" Margin="0,260,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="70"  />
+        <TextBox Grid.Column="1" HorizontalAlignment="Center" x:Name ="VarParaInp" Margin="0,300,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="70"  />
+    </Grid>
+</Window>

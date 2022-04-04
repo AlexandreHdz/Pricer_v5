@@ -1,0 +1,37 @@
+﻿<Window x:Class="Pricer_v5.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pricer_v5"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="500" Width="800" Background="#FF5A5A5A">
+    <Grid KeyboardNavigation.TabNavigation="Cycle">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row ="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="0,0,0,0" TextWrapping="Wrap" Text="Choisissez l'option à pricer." VerticalAlignment="Top" Width="Auto" FontSize="20" FontWeight="Bold" Foreground="#FF52C8C6"/>
+        <Button Grid.Row="2"  x:Name ="CallEU" Content="Call EU" HorizontalAlignment="Center" Margin="0,10,0,10" VerticalAlignment="Top" Height="76" Width="74" Click="CallEU_Click" Background="#FF52C8C6" BorderBrush="White"/>
+        <Button Grid.Row="2" Grid.Column ="1" x:Name ="PutEU" Content="Put EU" HorizontalAlignment="Center" Margin="0,10,0,10" VerticalAlignment="Top" Height="76" Width="74" Click="PutEU_Click" Background="#FF52C8C6" BorderBrush="White"/>
+        <Button Grid.Row="3" x:Name ="CallAS" Content="Call AS" HorizontalAlignment="Center" Margin="0,10,0,10" VerticalAlignment="Top" Height="76" Width="74" Click="CallAS_Click" Background="#FF52C8C6" BorderBrush="White"/>
+        <Button Grid.Row="3" Grid.Column ="1" x:Name ="PutAS" Content="Put AS" HorizontalAlignment="Center" Margin="0,10,0,10" VerticalAlignment="Top" Height="76" Width="74" Click="PutAS_Click" Background="#FF52C8C6" BorderBrush="White"/>
+        <Button Grid.Row="4" x:Name ="CallKO" Content="Call KO" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="76" Width="74" Click="CallKO_Click" Background="#FF52C8C6" BorderBrush="White"/>
+        <Button Grid.Row="4" Grid.Column ="1" x:Name ="PutKO" Content="Put KO" HorizontalAlignment="Center" Margin="0,10,0,10" VerticalAlignment="Top" Height="76" Width="74" Click="PutKO_Click" Background="#FF52C8C6" BorderBrush="White"/>
+        <Button Grid.Row="5" x:Name ="CallKI" Content="Call KI" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Height="76" Width="74" Click="CallKI_Click" Background="#FF52C8C6" BorderBrush="White"/>
+        <Button Grid.Row="5" Grid.Column ="1" x:Name ="PutKI" Content="Put KI" HorizontalAlignment="Center" Margin="0,10,0,10" VerticalAlignment="Top" Height="76" Width="74" Click="PutKI_Click" Background="#FF52C8C6" BorderBrush="White"/>
+        <Menu Grid.Row="0" Grid.ColumnSpan="2" DockPanel.Dock="Top" Height="20" Margin="0,0,0,0" Width="Auto">
+            <MenuItem Header="Yahoo" Click="GetYahooData" />
+            <MenuItem Header="Help" Click="GetHelp" />
+            <MenuItem Header="VaR"  Click="VaR"/>
+        </Menu>
+    </Grid>
+</Window>
