@@ -25,11 +25,25 @@ namespace Pricer_v5
             DateTime Date1 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 0, 0, 0);
             if (Date1.Month < 10)
             {
-                AsofInp.Text = Date1.Day.ToString() + "/0" + Date1.Month.ToString() + "/" + Date1.Year.ToString();
+                if (Date1.Day < 10)
+                {
+                    AsofInp.Text = "0" + Date1.Day.ToString() + "/0" + Date1.Month.ToString() + "/" + Date1.Year.ToString();
+                }
+                else
+                {
+                    AsofInp.Text = Date1.Day.ToString() + "/0" + Date1.Month.ToString() + "/" + Date1.Year.ToString();
+                }
             }
             else
             {
-                AsofInp.Text = Date1.Day.ToString() + "/" + Date1.Month.ToString() + "/" + Date1.Year.ToString();
+                if (Date1.Day < 10)
+                {
+                    AsofInp.Text = "0" + Date1.Day.ToString() + "/" + Date1.Month.ToString() + "/" + Date1.Year.ToString();
+                }
+                else
+                {
+                    AsofInp.Text = Date1.Day.ToString() + "/" + Date1.Month.ToString() + "/" + Date1.Year.ToString();
+                }
             }
             DisplayPayoff.IsEnabled = false;
             DisplaySimu.IsEnabled = false;
@@ -155,7 +169,7 @@ namespace Pricer_v5
                             {
                                 PbStatus.Value = (int)i / 1000;
                             });
-                            decimal[] traji = cal.Euler(S, r, v, T);
+                            decimal[] traji = cal.Euler(S, r, v, T, nbJoursTot);
                             for (int s = 0; s < traji.Length - 1; s++)
                             {
                                 points.Add(new Simu() { id = i, pas = s, Value = traji[s] });
@@ -172,7 +186,7 @@ namespace Pricer_v5
                         }
                         else
                         {
-                            decimal[] traj = cal.Euler(S, r, v, T);
+                            decimal[] traj = cal.Euler(S, r, v, T, nbJoursTot);
 
                             if (cal.BarriereReachCallKO(L, traj) == true)
                             {
@@ -213,7 +227,7 @@ namespace Pricer_v5
                             {
                                 PbStatus.Value = (int)i / 1000;
                             });
-                            decimal[] traji = cal.MBG(S, r, v, T);
+                            decimal[] traji = cal.MBG(S, r, v, T, nbJoursTot);
                             for (int s = 0; s < traji.Length - 1; s++)
                             {
                                 points.Add(new Simu() { id = i, pas = s, Value = traji[s] });
@@ -229,7 +243,7 @@ namespace Pricer_v5
                         }
                         else
                         {
-                            decimal[] traj = cal.MBG(S, r, v, T);
+                            decimal[] traj = cal.MBG(S, r, v, T, nbJoursTot);
 
                             if (cal.BarriereReachCallKO(L, traj) == true)
                             {
@@ -270,7 +284,7 @@ namespace Pricer_v5
                             {
                                 PbStatus.Value = (int)i / 1000;
                             });
-                            decimal[] traji = cal.Milstein2(S, r, v, T);
+                            decimal[] traji = cal.Milstein2(S, r, v, T, nbJoursTot);
                             for (int s = 0; s < traji.Length - 1; s++)
                             {
                                 points.Add(new Simu() { id = i, pas = s, Value = traji[s] });
@@ -286,7 +300,7 @@ namespace Pricer_v5
                         }
                         else
                         {
-                            decimal[] traj = cal.Milstein2(S, r, v, T);
+                            decimal[] traj = cal.Milstein2(S, r, v, T, nbJoursTot);
 
                             if (cal.BarriereReachCallKO(L, traj) == true)
                             {

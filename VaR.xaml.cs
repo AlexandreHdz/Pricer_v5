@@ -103,9 +103,9 @@ namespace Pricer_v5
                 YahooDataList.ItemsSource = list;
             }
             Utilitaire ut = new Utilitaire();
-            double VarHis = ut.VaRHisto(Histo, double.Parse(Alp, CultureInfo.InvariantCulture) / 100.0, double.Parse(Hor, CultureInfo.InvariantCulture));
-            double VarMC = ut.VaRMC(Histo, double.Parse(Alp, CultureInfo.InvariantCulture) / 100.0, double.Parse(Hor, CultureInfo.InvariantCulture));
-            double VarPara = ut.VaRPara(Histo, double.Parse(Alp, CultureInfo.InvariantCulture) / 100.0, double.Parse(Hor, CultureInfo.InvariantCulture));
+            double VarHis = Math.Round(ut.VaRHisto(Histo, double.Parse(Alp, CultureInfo.InvariantCulture) / 100.0, double.Parse(Hor, CultureInfo.InvariantCulture)),6);
+            double VarMC = Math.Round(ut.VaRMC(Histo, double.Parse(Alp, CultureInfo.InvariantCulture) / 100.0, double.Parse(Hor, CultureInfo.InvariantCulture)),6);
+            double VarPara = Math.Round(ut.VaRPara(Histo, double.Parse(Alp, CultureInfo.InvariantCulture) / 100.0, double.Parse(Hor, CultureInfo.InvariantCulture)),6);
 
             VaRHistInp.Text = VarHis.ToString();
             VaRMCInp.Text = VarMC.ToString();
