@@ -66,6 +66,7 @@ namespace Pricer_v5
             Taux = TauxInp.Text;
             Vol = VolInp.Text;
             Mat = MatInp.Text;
+            DateAf = AsofInp.Text;
             if (cal.CheckInput("Spot", Spot) != "")
             {
                 string caption = "Erreur détectée";
@@ -105,6 +106,14 @@ namespace Pricer_v5
                 DialogResult result;
                 err = "La valeur pour 'Maturité' n'est pas correct. \n";
                 result = System.Windows.Forms.MessageBox.Show(err + cal.CheckInput("Mat", Mat), caption, Ok);
+            }
+            else if (cal.CheckInput("Asof", DateAf) != "")
+            {
+                string caption = "Erreur détectée";
+                MessageBoxButtons Ok = MessageBoxButtons.OK;
+                DialogResult result;
+                err = "La valeur pour 'Date Pricing' n'est pas correct. \n";
+                result = System.Windows.Forms.MessageBox.Show(err + cal.CheckInput("Asof", DateAf), caption, Ok);
             }
             else
             {

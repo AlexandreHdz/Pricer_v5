@@ -82,6 +82,8 @@ namespace Pricer_v5
 
         private void PutKI_Click(object sender, RoutedEventArgs e)
         {
+            InputPutKI p = new InputPutKI();
+            p.Show();
 
         }
 

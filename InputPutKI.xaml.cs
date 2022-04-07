@@ -17,9 +17,9 @@ namespace Pricer_v5
     /// <summary>
     /// Logique d'interaction pour Input.xaml
     /// </summary>
-    public partial class InputCallAS : Window
+    public partial class InputPutKI : Window
     {
-        public InputCallAS()
+        public InputPutKI()
         {
             InitializeComponent();
             DateTime Date1 = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 0, 0, 0);
@@ -45,6 +45,8 @@ namespace Pricer_v5
                     AsofInp.Text = Date1.Day.ToString() + "/" + Date1.Month.ToString() + "/" + Date1.Year.ToString();
                 }
             }
+            DisplayPayoff.IsEnabled = false;
+            DisplaySimu.IsEnabled = false;
         }
 
         string Spot = "";
@@ -52,9 +54,11 @@ namespace Pricer_v5
         string Taux = "";
         string Vol = "";
         string Mat = "";
+        string Bar = "";
         string DateAf = "";
         Utilitaire cal = new Utilitaire();
         private ModelView.ModelView viewModel;
+        private ModelView.PayoffView payoffview;
         private void Price_Click(object sender, RoutedEventArgs e)
         {
             string err = "";
@@ -90,7 +94,7 @@ namespace Pricer_v5
             }
             else if (cal.CheckInput("Vol", Vol) != "")
             {
-                string caption = "Erreur détécté";
+                string caption = "Erreur détectée";
                 MessageBoxButtons Ok = MessageBoxButtons.OK;
                 DialogResult result;
                 err = "La valeur pour 'Volatility' n'est pas correct. \n";
@@ -98,7 +102,7 @@ namespace Pricer_v5
             }
             else if (cal.CheckInput("Mat", Mat) != "")
             {
-                string caption = "Erreur détécté";
+                string caption = "Erreur détectée";
                 MessageBoxButtons Ok = MessageBoxButtons.OK;
                 DialogResult result;
                 err = "La valeur pour 'Maturité' n'est pas correct. \n";
@@ -114,12 +118,23 @@ namespace Pricer_v5
             }
             else
             {
-                DisplayDataCallEU();
+                if (Euler.IsChecked == false && MBG.IsChecked == false && Milstein.IsChecked == false)
+                {
+                    string caption = "Erreur détectée";
+                    MessageBoxButtons Ok = MessageBoxButtons.OK;
+                    DialogResult result;
+                    err = "Aucune méthode de simulation selectionée \n";
+                    result = System.Windows.Forms.MessageBox.Show(err, caption, Ok);
+                }
+                else
+                {
+                    DisplayData();
+                }
             }
 
         }
 
-        private async void DisplayDataCallEU()
+        private async void DisplayData()
         {
             PriceInp.Visibility = Visibility.Hidden;
             Spot = SpotInp.Text;
@@ -127,8 +142,10 @@ namespace Pricer_v5
             Taux = TauxInp.Text;
             Vol = VolInp.Text;
             Mat = MatInp.Text;
+            Bar = BarInp.Text;
             DateAf = AsofInp.Text;
             YahooData yh = new YahooData();
+
             DateTime DateAsof = yh.ConvertDate(DateAf);
             DateTime DateT = yh.ConvertDate(Mat);
             int nbDays = yh.NbWorkingDays(DateAsof, DateT);
@@ -139,6 +156,7 @@ namespace Pricer_v5
             double r = double.Parse(Taux, CultureInfo.InvariantCulture) / 100.0;
             double v = double.Parse(Vol, CultureInfo.InvariantCulture) / 100.0;
             //double T = double.Parse(Mat, CultureInfo.InvariantCulture);
+            double L = double.Parse(Bar, CultureInfo.InvariantCulture);
             double T = (double)nbDays;
             double Tfa = T / (double)nbJoursTot;
             decimal Prime = 0.0m;
@@ -164,18 +182,28 @@ namespace Pricer_v5
                             {
                                 points.Add(new Simu() { id = i, pas = s, Value = traji[s] });
                             }
-                            decimal somme1 = (decimal)Math.Max((double)cal.SommeTraj(traji) / traji.Length - K, 0.0);
-                            decimal somme2 = (decimal)Math.Max(Math.Exp((double)cal.LogSommeTraj(traji) / traji.Length) - K, 0.0);
-                            Prime = Prime + somme1 - somme2;
+                            if (cal.BarriereReachPutKO(L, traji) == false)
+                            {
+                                Prime = Prime + 0.0m;
+                            }
+                            else
+                            {
+                                Prime = Prime + (decimal)Math.Max(-traji[traji.Length - 1] + (decimal)K, 0.0m);
+                            }
 
                         }
                         else
                         {
                             decimal[] traj = cal.Euler(S, r, v, T, nbJoursTot);
 
-                            decimal somme1 = (decimal)Math.Max((double)cal.SommeTraj(traj) / traj.Length - K, 0.0);
-                            decimal somme2 = (decimal)Math.Max(Math.Exp((double)cal.LogSommeTraj(traj) / traj.Length) - K, 0.0);
-                            Prime = Prime + somme1 - somme2;
+                            if (cal.BarriereReachPutKO(L, traj) == false)
+                            {
+                                Prime = Prime + 0.0m;
+                            }
+                            else
+                            {
+                                Prime = Prime + (decimal)Math.Max(-traj[traj.Length - 1] + (decimal)K, 0.0m);
+                            }
                         }
 
                     }
@@ -212,18 +240,27 @@ namespace Pricer_v5
                             {
                                 points.Add(new Simu() { id = i, pas = s, Value = traji[s] });
                             }
-                            decimal somme1 = (decimal)Math.Max((double)cal.SommeTraj(traji) / traji.Length - K, 0.0);
-                            decimal somme2 = (decimal)Math.Max(Math.Exp((double)cal.LogSommeTraj(traji) / traji.Length) - K, 0.0);
-                            Prime = Prime + somme1 - somme2;
-
+                            if (cal.BarriereReachCallKO(L, traji) == false)
+                            {
+                                Prime = Prime + 0.0m;
+                            }
+                            else
+                            {
+                                Prime = Prime + (decimal)Math.Max(-traji[traji.Length - 1] + (decimal)K, 0.0m);
+                            }
                         }
                         else
                         {
                             decimal[] traj = cal.MBG(S, r, v, T, nbJoursTot);
 
-                            decimal somme1 = (decimal)Math.Max((double)cal.SommeTraj(traj) / traj.Length - K, 0.0);
-                            decimal somme2 = (decimal)Math.Max(Math.Exp((double)cal.LogSommeTraj(traj) / traj.Length) - K, 0.0);
-                            Prime = Prime + somme1 - somme2;
+                            if (cal.BarriereReachPutKO(L, traj) == false)
+                            {
+                                Prime = Prime + 0.0m;
+                            }
+                            else
+                            {
+                                Prime = Prime + (decimal)Math.Max(-traj[traj.Length - 1] + (decimal)K, 0.0m);
+                            }
                         }
 
                     }
@@ -260,18 +297,27 @@ namespace Pricer_v5
                             {
                                 points.Add(new Simu() { id = i, pas = s, Value = traji[s] });
                             }
-                            decimal somme1 = (decimal)Math.Max((double)cal.SommeTraj(traji) / traji.Length - K, 0.0);
-                            decimal somme2 = (decimal)Math.Max(Math.Exp((double)cal.LogSommeTraj(traji) / traji.Length) - K, 0.0);
-                            Prime = Prime + somme1 - somme2;
-
+                            if (cal.BarriereReachPutKO(L, traji) == false)
+                            {
+                                Prime = Prime + 0.0m;
+                            }
+                            else
+                            {
+                                Prime = Prime + (decimal)Math.Max(-traji[traji.Length - 1] + (decimal)K, 0.0m);
+                            }
                         }
                         else
                         {
                             decimal[] traj = cal.Milstein2(S, r, v, T, nbJoursTot);
 
-                            decimal somme1 = (decimal)Math.Max((double)cal.SommeTraj(traj) / traj.Length - K, 0.0);
-                            decimal somme2 = (decimal)Math.Max(Math.Exp((double)cal.LogSommeTraj(traj) / traj.Length) - K, 0.0);
-                            Prime = Prime + somme1 - somme2;
+                            if (cal.BarriereReachPutKO(L, traj) == false)
+                            {
+                                Prime = Prime + 0.0m;
+                            }
+                            else
+                            {
+                                Prime = Prime + (decimal)Math.Max((decimal)K - traj[traj.Length - 1], 0.0m);
+                            }
                         }
 
                     }
@@ -293,21 +339,85 @@ namespace Pricer_v5
             }
             PlotSimu.DataContext = viewModel;
 
+            // PLOT PAYOFF
+            var point2 = cal.PlotPayoff(S, K, Prime / 100000m, "PutKI", L);
+            var AllData = point2.GroupBy(m => m.id).ToList();
+            payoffview = new ModelView.PayoffView();
+            payoffview.SetBackground(190, 190, 190);
+            payoffview.SetUpAxis(Prime / 100000m, K);
+            foreach (var data in AllData)
+            {
+                if (data.Key == 0)
+                {
+                    var lines = new LineSeries
+                    {
+                        StrokeThickness = 2,
+                        MarkerSize = 3,
+                        CanTrackerInterpolatePoints = false,
+                        Title = "Long Position"
+                    };
+                    data.ToList().ForEach(d => lines.Points.Add(new DataPoint(d.pas, d.Value)));
+                    payoffview.AddLines(lines);
+                }
+                else if (data.Key == 1)
+                {
+                    var lines = new LineSeries
+                    {
+                        StrokeThickness = 2,
+                        MarkerSize = 3,
+                        CanTrackerInterpolatePoints = false,
+                        Title = "Short Position"
+                    };
+                    data.ToList().ForEach(d => lines.Points.Add(new DataPoint(d.pas, d.Value)));
+                    payoffview.AddLines(lines);
+                }
+                else if (data.Key == 2)
+                {
+                    var lines = new LineSeries
+                    {
+                        StrokeThickness = 0.5,
+                        MarkerSize = 0.5,
+                        CanTrackerInterpolatePoints = false,
+                        Color = OxyColor.FromRgb(0, 0, 0),
+
+                    };
+                    data.ToList().ForEach(d => lines.Points.Add(new DataPoint(d.pas, d.Value)));
+                    payoffview.AddLines(lines);
+                }
+                else
+                {
+                    var lines = new LineSeries
+                    {
+                        StrokeThickness = 0.5,
+                        MarkerSize = 0.5,
+                        CanTrackerInterpolatePoints = false,
+                        Color = OxyColor.FromRgb(0, 0, 0),
+
+                    };
+                    data.ToList().ForEach(d => lines.Points.Add(new DataPoint(d.pas, d.Value)));
+                    payoffview.AddLines(lines);
+                }
+            }
+
+            PlotPayoff.DataContext = payoffview;
+            PlotPayoff.Visibility = Visibility.Hidden;
+
+            DisplaySimu.IsEnabled = true;
+            DisplayPayoff.IsEnabled = true;
+
             PbStatus.Visibility = Visibility.Collapsed;
             PbCal.Visibility = Visibility.Collapsed;
             PriceInp.Visibility = Visibility.Visible;
-            Prime = Prime / 100000.0m + cal.Ez(S, r, v, Tfa, K, -1.0);
-            Prime = Math.Round(Prime, 6);
-            decimal PrimeFa = Math.Round(cal.CallAS(S, r, v, Tfa, K), 5);
+            Prime = (decimal)Math.Exp(-r * Tfa) * Prime / 100000m;
+            Prime = Math.Round(Prime, 5);
+            decimal PrimeFa = Math.Round(cal.PutKI(S, r, v, Tfa, K, L), 5);
             FAInp.Text = PrimeFa.ToString();
             MCInp.Text = Prime.ToString();
-            MCInp.Visibility = Visibility.Visible;
-            MC.Visibility = Visibility.Visible;
-            DeltaInp.Text = Math.Round(cal.DeltaASFDM(S, r, v, Tfa, K, "Call"), 5).ToString();
-            GammaInp.Text = Math.Round(cal.GammaASFDM(S, r, v, Tfa, K, "Call"), 5).ToString();
-            VegaInp.Text = Math.Round(cal.VegaASFDM(S, r, v, Tfa, K, "Call"), 5).ToString();
-            ThetaInp.Text = Math.Round(cal.ThetaASFDM(S, r, v, Tfa, K, "Call"), 5).ToString();
-            RhoInp.Text = Math.Round(cal.RhoASFDM(S, r, v, Tfa, K, "Call"), 5).ToString();
+            DeltaInp.Text = Math.Round(cal.DeltaKIFDM(S, r, v, Tfa, K, L, "Put"), 5).ToString();
+            GammaInp.Text = Math.Round(cal.GammaKIFDM(S, r, v, Tfa, K, L, "Put"), 5).ToString();
+            VegaInp.Text = Math.Round(cal.VegaKIFDM(S, r, v, Tfa, K, L, "Put"), 5).ToString();
+            ThetaInp.Text = Math.Round(cal.ThetaKIFDM(S, r, v, Tfa, K, L, "Put"), 5).ToString();
+            RhoInp.Text = Math.Round(cal.RhoKIFDM(S, r, v, Tfa, K, L, "Put"), 5).ToString();
         }
 
         private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -322,6 +432,34 @@ namespace Pricer_v5
             public decimal Value { get; set; }
             public int id { get; set; }
             public int pas { get; set; }
+        }
+
+        private void ShowPayoff(object sender, RoutedEventArgs e)
+        {
+            if (PlotPayoff.Visibility == Visibility.Visible)
+            {
+                return;
+            }
+            else
+            {
+                PlotSimu.Visibility = Visibility.Hidden;
+                PlotPayoff.Visibility = Visibility.Visible;
+                return;
+            }
+        }
+
+        private void ShowSimu(object sender, RoutedEventArgs e)
+        {
+            if (PlotSimu.Visibility == Visibility.Visible)
+            {
+                return;
+            }
+            else
+            {
+                PlotSimu.Visibility = Visibility.Visible;
+                PlotPayoff.Visibility = Visibility.Hidden;
+                return;
+            }
         }
     }
 }
