@@ -63,6 +63,7 @@ namespace Pricer_v5
             Taux = TauxInp.Text;
             Vol = VolInp.Text;
             Mat = MatInp.Text;
+            DateAf = AsofInp.Text;
             if (cal.CheckInput("Spot", Spot) != "")
             {
                 string caption = "Erreur détectée";
@@ -102,6 +103,14 @@ namespace Pricer_v5
                 DialogResult result;
                 err = "La valeur pour 'Maturité' n'est pas correct. \n";
                 result = System.Windows.Forms.MessageBox.Show(err + cal.CheckInput("Mat", Mat), caption, Ok);
+            }
+            else if (cal.CheckInput("Asof", DateAf) != "")
+            {
+                string caption = "Erreur détectée";
+                MessageBoxButtons Ok = MessageBoxButtons.OK;
+                DialogResult result;
+                err = "La valeur pour 'Date Pricing' n'est pas correct. \n";
+                result = System.Windows.Forms.MessageBox.Show(err + cal.CheckInput("Asof", DateAf), caption, Ok);
             }
             else
             {
@@ -288,7 +297,7 @@ namespace Pricer_v5
             PbStatus.Visibility = Visibility.Collapsed;
             PbCal.Visibility = Visibility.Collapsed;
             PriceInp.Visibility = Visibility.Visible;
-            Prime = (decimal)Math.Exp(-r * Tfa) * (Prime / 100000m + cal.EzPut(S, r, v, Tfa, K, 1.0));
+            Prime = Prime / 100000m + cal.EzPut(S, r, v, Tfa, K, 1.0);
             Prime = Math.Round(Prime, 5);
             decimal PrimeFA = Math.Round(cal.PutAS(S, r, v, Tfa, K), 5);
             FAInp.Text = PrimeFA.ToString();
