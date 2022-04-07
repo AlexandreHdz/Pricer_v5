@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:Pricer_v5"
         mc:Ignorable="d"
         PreviewKeyDown="Window_PreviewKeyDown"
-        Title="Input" Height="500" Width="1100" Background="#FF5A5A5A">
+        Title="Asian Put" Height="500" Width="1100" Background="#FF5A5A5A">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120" KeyboardNavigation.TabNavigation="Cycle"/>
